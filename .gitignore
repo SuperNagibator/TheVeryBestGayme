@@ -1,0 +1,9 @@
+# cmake
+CMakeUserPresets.json
+build/
+
+# vscode
+.vscode/
+
+# clangd
+.cache/
