@@ -1,23 +1,25 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#include <exception>
+#include <iostream>
+
+#include "Application.hpp"
+
 int main() {
-    glfwInit();
+    if (!glfwInit()) {
+        std::cerr << "error: glfw initialization failed\n";
+        return -1;
+    }
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow *window = glfwCreateWindow(800, 600, "TheVeryBestGayme", nullptr, nullptr);
-    glfwMakeContextCurrent(window);
-    gladLoadGL(glfwGetProcAddress);
-
-    while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
-
-        glClearColor(0.4, 0.6, 0.8, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glfwSwapBuffers(window);
+    try {
+        Application application;
+    } catch (std::exception &e) {
+        std::cerr << "error: " << e.what() << '\n';
     }
 
     glfwTerminate();
