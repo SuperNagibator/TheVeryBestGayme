@@ -4,5 +4,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
+add_library(glad glad/src/gl.c)
+target_include_directories(glad PUBLIC glad/include)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad)
+
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
