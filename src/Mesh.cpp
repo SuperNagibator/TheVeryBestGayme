@@ -1,10 +1,12 @@
 #include <glad/gl.h>
 
 #include <vector>
+#include <memory>
 
+#include "Shader.hpp"
 #include "Mesh.hpp"
 
-Mesh::Mesh(std::vector<float> &vertices, std::vector<unsigned short> &triangles) {
+Mesh::Mesh(std::vector<float> &vertices, std::vector<unsigned short> &triangles, std::shared_ptr<Shader> shader) : shader(shader) {
     glCreateVertexArrays(1, &vertexArray);
     glCreateBuffers(1, &vertexBuffer);
     glCreateBuffers(1, &triangleBuffer);
@@ -29,6 +31,7 @@ Mesh::~Mesh() {
 }
 
 void Mesh::draw() {
+    shader->use();
     glBindVertexArray(vertexArray);
     glDrawElements(GL_TRIANGLES, trianglesCount, GL_UNSIGNED_SHORT, 0);
 }
