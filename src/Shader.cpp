@@ -57,3 +57,7 @@ Shader::Shader(const char *vert, const char *frag) {
 Shader::~Shader() {
     glDeleteProgram(program);
 }
+
+void Shader::use() {
+    glUseProgram(program);
+}
