@@ -9,6 +9,8 @@ class Shader {
 public:
     Shader(const char *vert, const char *frag);
     ~Shader();
+
+    void use();
 };
 
 #endif // SHADER_HPP

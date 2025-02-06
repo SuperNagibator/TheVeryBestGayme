@@ -12,6 +12,7 @@ add_executable(
     src/main.cpp 
     src/Application.cpp 
     src/Shader.cpp
+    src/Mesh.cpp
 )
 
 target_link_libraries(
