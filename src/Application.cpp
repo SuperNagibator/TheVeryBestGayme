@@ -5,25 +5,35 @@
 
 #include "Application.hpp"
 
-Application::Application() {
-    GLFWwindow *window = glfwCreateWindow(800, 600, "TheVeryBestGayme", nullptr, nullptr);
-    if (!window) {
-        throw std::runtime_error("window creation failed");
+struct WindowWrapper {
+    GLFWwindow *window;
+
+    WindowWrapper(int width, int height, const char *title) {
+        window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+        if (!window) {
+            throw std::runtime_error("window creation failed");
+        }
     }
 
-    glfwMakeContextCurrent(window);
+    ~WindowWrapper() {
+        glfwDestroyWindow(window);
+    }
+};
+
+Application::Application() {
+    WindowWrapper windowWrapper(800, 600, "TheVeryBestGame");
+    glfwMakeContextCurrent(windowWrapper.window);
+
     if (!gladLoadGL(glfwGetProcAddress)) {
         throw std::runtime_error("opengl loading failed");
     }
 
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(windowWrapper.window)) {
         glfwPollEvents();
 
         glClearColor(0.4, 0.6, 0.8, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(windowWrapper.window);
     }
-
-    glfwDestroyWindow(window);
 }
