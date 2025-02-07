@@ -23,7 +23,7 @@ GLFWwindow *createWindow(int width, int height, const char *title) {
 
 Application::Application() {
     std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)> window(
-        createWindow(800, 600, "TheVeryBestGame"), 
+        createWindow(800, 600, PROJECT_NAME), 
         glfwDestroyWindow
     );
 
