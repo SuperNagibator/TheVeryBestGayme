@@ -4,9 +4,15 @@
 #include <memory>
 
 #include "Shader.hpp"
+#include "Texture.hpp"
 #include "Mesh.hpp"
 
-Mesh::Mesh(std::vector<float> &vertices, std::vector<unsigned short> &triangles, std::shared_ptr<Shader> shader) : shader(shader) {
+Mesh::Mesh(
+    std::vector<float> &vertices, 
+    std::vector<unsigned short> &triangles, 
+    std::shared_ptr<Shader> shader,
+    std::shared_ptr<Texture> texture
+) : shader(shader), texture(texture) {
     glCreateVertexArrays(1, &vertexArray);
     glCreateBuffers(1, &vertexBuffer);
     glCreateBuffers(1, &triangleBuffer);
@@ -19,7 +25,10 @@ Mesh::Mesh(std::vector<float> &vertices, std::vector<unsigned short> &triangles,
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size() * sizeof(unsigned short), triangles.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(0 * sizeof(float)));
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
 
     trianglesCount = triangles.size();
 }
@@ -32,6 +41,10 @@ Mesh::~Mesh() {
 
 void Mesh::draw() {
     shader->use();
+
+    glActiveTexture(GL_TEXTURE0);
+    texture->bind();
+
     glBindVertexArray(vertexArray);
     glDrawElements(GL_TRIANGLES, trianglesCount, GL_UNSIGNED_SHORT, 0);
 }

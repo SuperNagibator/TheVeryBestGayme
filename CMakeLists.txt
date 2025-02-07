@@ -6,6 +6,7 @@ add_library(glad glad/src/gl.c)
 target_include_directories(glad PUBLIC glad/include)
 
 find_package(glfw3 CONFIG REQUIRED)
+find_package(SPNG CONFIG REQUIRED)
 
 add_executable(
     ${PROJECT_NAME} 
@@ -13,6 +14,7 @@ add_executable(
     src/Application.cpp 
     src/Resource.cpp
     src/Shader.cpp
+    src/Texture.cpp
     src/Mesh.cpp
 )
 
@@ -21,4 +23,5 @@ target_link_libraries(
     PRIVATE 
     glad
     glfw
+    $<IF:$<TARGET_EXISTS:spng::spng>,spng::spng,spng::spng_static>
 )
