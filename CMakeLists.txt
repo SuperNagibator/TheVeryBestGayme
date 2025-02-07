@@ -25,3 +25,5 @@ target_link_libraries(
     glfw
     $<IF:$<TARGET_EXISTS:spng::spng>,spng::spng,spng::spng_static>
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE -DPROJECT_NAME="${PROJECT_NAME}")
