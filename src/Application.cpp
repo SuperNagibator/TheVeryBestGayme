@@ -35,10 +35,12 @@ Application::Application() {
 
     Resource vertResource("resources/test.vert");
     std::vector<char> vert = vertResource.load();
+    vert.reserve(vert.size() + 1);
     vert.push_back('\0');
 
     Resource fragResource("resources/test.frag");
     std::vector<char> frag = fragResource.load();
+    vert.reserve(vert.size() + 1);
     frag.push_back('\0');
 
     std::vector<float> vertices = {
