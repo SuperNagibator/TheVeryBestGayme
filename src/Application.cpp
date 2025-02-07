@@ -9,6 +9,7 @@
 #include "Application.hpp"
 #include "Resource.hpp"
 #include "Shader.hpp"
+#include "Texture.hpp"
 #include "Mesh.hpp"
 
 GLFWwindow *createWindow(int width, int height, const char *title) {
@@ -57,11 +58,15 @@ Application::Application() {
     std::vector<char> imageRaw(imageRawSize);
     spng_decode_image(spngContext.get(), imageRaw.data(), imageRawSize, SPNG_FMT_RGBA8, 0);
 
+    spng_ihdr imageHeader;
+    spng_get_ihdr(spngContext.get(), &imageHeader);
+    std::shared_ptr<Texture> texture = std::make_shared<Texture>(imageRaw, imageHeader.width, imageHeader.height);
+
     std::vector<float> vertices = {
-        -0.5, -0.5,
-        0.5, -0.5,
-        -0.5, 0.5,
-        0.5, 0.5,
+        -0.5, -0.5, 0.0, 1.0,
+        0.5, -0.5, 1.0, 1.0,
+        -0.5, 0.5, 0.0, 0.0,
+        0.5, 0.5, 1.0, 0.0,
     };
 
     std::vector<unsigned short> triangles = {
@@ -70,7 +75,7 @@ Application::Application() {
     };
 
     std::shared_ptr<Shader> shader = std::make_shared<Shader>(vert.data(), frag.data());
-    Mesh mesh(vertices, triangles, shader);
+    Mesh mesh(vertices, triangles, shader, texture);
 
     while (!glfwWindowShouldClose(window.get())) {
         glfwPollEvents();

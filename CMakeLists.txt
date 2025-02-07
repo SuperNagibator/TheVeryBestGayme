@@ -14,6 +14,7 @@ add_executable(
     src/Application.cpp 
     src/Resource.cpp
     src/Shader.cpp
+    src/Texture.cpp
     src/Mesh.cpp
 )
 
