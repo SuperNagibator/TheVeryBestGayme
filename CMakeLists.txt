@@ -6,6 +6,7 @@ add_library(glad glad/src/gl.c)
 target_include_directories(glad PUBLIC glad/include)
 
 find_package(glfw3 CONFIG REQUIRED)
+find_package(SPNG CONFIG REQUIRED)
 
 add_executable(
     ${PROJECT_NAME} 
@@ -21,4 +22,5 @@ target_link_libraries(
     PRIVATE 
     glad
     glfw
+    $<IF:$<TARGET_EXISTS:spng::spng>,spng::spng,spng::spng_static>
 )

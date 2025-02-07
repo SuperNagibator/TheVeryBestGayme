@@ -1,5 +1,6 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
+#include <spng.h>
 
 #include <stdexcept>
 #include <vector>
@@ -31,6 +32,11 @@ Application::Application() {
         throw std::runtime_error("opengl loading failed");
     }
 
+    std::unique_ptr<spng_ctx, void(*)(spng_ctx*)> spngContext(
+        spng_ctx_new(0),
+        spng_ctx_free
+    );
+
     Resource vertResource("resources/test.vert");
     std::vector<char> vert = vertResource.load();
     vert.reserve(vert.size() + 1);
@@ -40,6 +46,16 @@ Application::Application() {
     std::vector<char> frag = fragResource.load();
     vert.reserve(vert.size() + 1);
     frag.push_back('\0');
+
+    Resource image("resources/test.png");
+    std::vector<char> imagePng = image.load();
+    spng_set_png_buffer(spngContext.get(), imagePng.data(), imagePng.size());
+
+    size_t imageRawSize;
+    spng_decoded_image_size(spngContext.get(), SPNG_FMT_RGBA8, &imageRawSize);
+
+    std::vector<char> imageRaw(imageRawSize);
+    spng_decode_image(spngContext.get(), imageRaw.data(), imageRawSize, SPNG_FMT_RGBA8, 0);
 
     std::vector<float> vertices = {
         -0.5, -0.5,
