@@ -10,24 +10,22 @@
 #include "Shader.hpp"
 #include "Mesh.hpp"
 
-struct WindowWrapper {
-    GLFWwindow *window;
-
-    WindowWrapper(int width, int height, const char *title) {
-        window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-        if (!window) {
-            throw std::runtime_error("window creation failed");
-        }
+GLFWwindow *createWindow(int width, int height, const char *title) {
+    GLFWwindow *window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    if (!window) {
+        throw std::runtime_error("window creation failed");
     }
 
-    ~WindowWrapper() {
-        glfwDestroyWindow(window);
-    }
-};
+    return window;
+}
 
 Application::Application() {
-    WindowWrapper windowWrapper(800, 600, "TheVeryBestGame");
-    glfwMakeContextCurrent(windowWrapper.window);
+    std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)> window(
+        createWindow(800, 600, "TheVeryBestGame"), 
+        glfwDestroyWindow
+    );
+
+    glfwMakeContextCurrent(window.get());
 
     if (!gladLoadGL(glfwGetProcAddress)) {
         throw std::runtime_error("opengl loading failed");
@@ -56,7 +54,7 @@ Application::Application() {
     std::shared_ptr<Shader> shader = std::make_shared<Shader>(vert.data(), frag.data());
     Mesh mesh(vertices, triangles, shader);
 
-    while (!glfwWindowShouldClose(windowWrapper.window)) {
+    while (!glfwWindowShouldClose(window.get())) {
         glfwPollEvents();
 
         glClearColor(0.4, 0.6, 0.8, 1.0);
@@ -64,6 +62,6 @@ Application::Application() {
 
         mesh.draw();
 
-        glfwSwapBuffers(windowWrapper.window);
+        glfwSwapBuffers(window.get());
     }
 }
