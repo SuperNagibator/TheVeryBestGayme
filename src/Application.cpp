@@ -21,6 +21,10 @@ GLFWwindow *createWindow(int width, int height, const char *title) {
     return window;
 }
 
+void framebufferSize(GLFWwindow *window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
 Application::Application() {
     std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)> window(
         createWindow(800, 600, PROJECT_NAME), 
@@ -32,6 +36,8 @@ Application::Application() {
     if (!gladLoadGL(glfwGetProcAddress)) {
         throw std::runtime_error("opengl loading failed");
     }
+
+    glfwSetFramebufferSizeCallback(window.get(), framebufferSize);
 
     std::unique_ptr<spng_ctx, void(*)(spng_ctx*)> spngContext(
         spng_ctx_new(0),
